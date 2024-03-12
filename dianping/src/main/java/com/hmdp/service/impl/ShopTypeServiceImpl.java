@@ -53,12 +53,10 @@ public class ShopTypeServiceImpl extends ServiceImpl<ShopTypeMapper, ShopType> i
 
         }
 
-        //将json串转化为集合对象
         String s = stringRedisTemplate.opsForValue().get(CACHE_SHOP_TYPE_KEY);
         JSONArray jsonArray = JSONUtil.parseArray(s);
         List<ShopType> typeList = jsonArray.toList(ShopType.class);
 
-        //更新时间
         stringRedisTemplate.expire(CACHE_SHOP_TYPE_KEY, CACHE_SHOP_TYPE_TTL, TimeUnit.MINUTES);
 
 //        System.out.println("????????????????????????????????????");
