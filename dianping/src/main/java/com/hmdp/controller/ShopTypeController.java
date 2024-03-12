@@ -4,6 +4,7 @@ package com.hmdp.controller;
 import com.hmdp.dto.Result;
 import com.hmdp.entity.ShopType;
 import com.hmdp.service.IShopTypeService;
+import com.hmdp.service.impl.ShopTypeServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,10 +26,18 @@ public class ShopTypeController {
     @Resource
     private IShopTypeService typeService;
 
+    /**
+     * 查询所有的店铺类型
+     * @return
+     */
     @GetMapping("/list")
     public Result queryTypeList() {
-        List<ShopType> typeList = typeService
-                .query().orderByAsc("sort").list();
-        return Result.ok(typeList);
+        //下方是mybatis-plus实现
+//        List<ShopType> typeList = typeService
+//                .query().orderByAsc("sort").list();
+//        return Result.ok(typeList);
+
+        return typeService.queryList();
+
     }
 }
