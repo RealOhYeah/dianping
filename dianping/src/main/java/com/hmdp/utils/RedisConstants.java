@@ -9,6 +9,7 @@ public class RedisConstants {
     public static final Long LOGIN_USER_TTL = 30L;
 
     //商铺过期时间
+    //缓解缓存穿透的压力，设置空值的时长
     public static final Long CACHE_NULL_TTL = 2L;
 
     public static final Long CACHE_SHOP_TTL = 30L;
