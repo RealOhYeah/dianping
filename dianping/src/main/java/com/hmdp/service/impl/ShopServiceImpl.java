@@ -59,7 +59,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     public Shop queryWithMutex(Long id)  {
         String key = CACHE_SHOP_KEY + id;
         // 1、从redis中查询商铺缓存
-        String shopJson = stringRedisTemplate.opsForValue().get("key");
+        String shopJson = stringRedisTemplate.opsForValue().get(key);
         // 2、判断是否存在
         if (StrUtil.isNotBlank(shopJson)) {
             // 存在,直接返回
@@ -83,6 +83,17 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
                 Thread.sleep(50);
                 return queryWithMutex(id);
             }
+
+            //  这里再次进行确定redis中是否含有数据(DoubleCheck)
+            shopJson = stringRedisTemplate.opsForValue().get(key);
+            if (StrUtil.isNotBlank(shopJson)) {
+                //若存在数据，就释放互斥锁
+                unlock(lockKey);
+
+                // 同时返回redis中有的数据
+                return JSONUtil.toBean(shopJson, Shop.class);
+            }
+
             //4.4 成功，根据id查询数据库(数据库在本地，操作很快，因此模拟休眠模拟场景)
             shop = getById(id);
             //模拟重建的延时
