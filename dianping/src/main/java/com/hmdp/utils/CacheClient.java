@@ -23,7 +23,7 @@ public class CacheClient {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    //创建线程池，解决逻辑过期
+    //创建线程池，为逻辑过期创建缓存
     private static final ExecutorService CACHE_REBUILD_EXECUTOR = Executors.newFixedThreadPool(10);
 
     public CacheClient(StringRedisTemplate stringRedisTemplate) {
@@ -34,6 +34,7 @@ public class CacheClient {
         stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(value), time, unit);
     }
 
+//    逻辑过期预热代码
     public void setWithLogicalExpire(String key, Object value, Long time, TimeUnit unit) {
         // 设置逻辑过期
         RedisData redisData = new RedisData();

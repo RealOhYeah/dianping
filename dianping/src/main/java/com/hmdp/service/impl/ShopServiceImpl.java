@@ -130,7 +130,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
 */
 
     /**
-     * 逻辑过期代码，将数据提前插入到redis
+     * 逻辑过期预热代码，将数据提前插入到redis
      */
     /*
     public void saveShop2Redis(Long id , Long expireSeconds) throws InterruptedException {
