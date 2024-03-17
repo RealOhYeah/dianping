@@ -7,16 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
 
-import java.sql.Time;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static com.hmdp.utils.RedisConstants.CACHE_SHOP_KEY;
-import static com.hmdp.utils.RedisIdWorker.nums;
 
 @SpringBootTest
 class HmDianPingApplicationTests {
@@ -30,7 +27,8 @@ class HmDianPingApplicationTests {
     @Autowired
     private RedisIdWorker redisIdWorker;
     private ExecutorService es = Executors.newFixedThreadPool(500);
-//    private static Long nums = 0L;
+
+    private static Long nums = 0L;
 
     @Test
     void testIdWorker() throws InterruptedException {
@@ -39,13 +37,15 @@ class HmDianPingApplicationTests {
 
         //此处定义执行任务
         Runnable task = () -> {
+            long ids = 0;
             for (int i = 0; i < 100; i++) {
                 long id = redisIdWorker.nextId("order");
 //              此处将生成的id进行打印输出
                 System.out.println("id = " + id);
-//                nums++;
-//                System.out.println(nums);
+                ids++;
+
             }
+            nums+=ids;
             //对计数器进行递减1操作，当计数器递减至0时，当前线程会去唤醒阻塞队列里的所有线程。
             latch.countDown();
         };
@@ -58,7 +58,7 @@ class HmDianPingApplicationTests {
         long end = System.currentTimeMillis();
         //这里打印出300个线程执行完成之后的最终时间
         System.out.println("time = " + (end - begin));
-        //最终打印输出数量
+        //最终打印输出数量(这样就解决了线程并发产生的计数问题)
         System.out.println("总共生成的id数：" + nums);
     }
 

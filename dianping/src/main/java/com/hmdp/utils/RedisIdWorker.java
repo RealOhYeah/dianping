@@ -15,7 +15,7 @@ public class RedisIdWorker {
      */
     private static final long BEGIN_TIMESTAMP = 1710611273L;
 
-    public static Long nums = 0L;
+
     /**
      * 序列号的位数
      */
@@ -39,8 +39,6 @@ public class RedisIdWorker {
         // 2.2.自增长
         long count = stringRedisTemplate.opsForValue().increment("icr:" + keyPrefix + ":" + date);
 
-        //TODO 这里粗略的计算id生成的数量(为什么id生成的不是30000整呢？？？？，而redis库中却是30000整？？？？)
-        nums++;
         // 3.拼接并返回
         return timestamp << COUNT_BITS | count;
     }
