@@ -57,11 +57,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //System.out.println(session);
         stringRedisTemplate.opsForValue().set(LOGIN_CODE_KEY + phone, code,LOGIN_CODE_TTL, TimeUnit.MINUTES);
 
+        String format = String.format("发送短信验证码成功，验证码：%s", code);
+
         // 5.发送验证码
-        log.debug(String.format("发送短信验证码成功，验证码：%s", code));
+        log.debug(format);
 
         // 返回ok
-        return Result.ok();
+        return Result.ok(format);
     }
 
     /**
@@ -110,7 +112,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         stringRedisTemplate.expire(tokenKey, LOGIN_USER_TTL, TimeUnit.MINUTES);
 
         // 8.返回token
-        return Result.ok(token);
+        return Result.ok("登录的token：" + token);
     }
 
     private User createUserWithPhone(String phone) {
