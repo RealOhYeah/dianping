@@ -5,7 +5,6 @@ import com.hmdp.service.ILock;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.data.redis.core.script.RedisScript;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +18,7 @@ public class SimpleRedisLock implements ILock {
     // 设置为true可以去除UUID的中线
     private static final String ID_PREFIX = UUID.randomUUID().toString(true) + "-";
 
-    // 提前启动Lua脚本
+    // 静态初始化Lua脚本
     private static final DefaultRedisScript<Long> UNLOCK_SCRIPT;
     static {
         UNLOCK_SCRIPT = new DefaultRedisScript<>();
@@ -47,7 +46,7 @@ public class SimpleRedisLock implements ILock {
     @Override
     public void unlock() {
 
-        // 调用Lua脚本(将判断和删除合为一步，体现原子性)
+        // 调用Lua脚本(将判断和删除合为一步，实现原子性)
         stringRedisTemplate.execute(
                 UNLOCK_SCRIPT,
                 Collections.singletonList(KEY_PREFIX + name),
