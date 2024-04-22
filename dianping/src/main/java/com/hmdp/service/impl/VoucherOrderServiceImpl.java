@@ -91,6 +91,8 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                             StreamOffset.create(queueName, ReadOffset.lastConsumed()) //ReadOffset.lastConsumed() => ">";
                     );
 
+                    System.out.println("调入循环中。。。。。");
+
                     // 2.判断订单信息是否为空
                     if (list == null || list.isEmpty()) {
                         // 如果为null，说明没有消息，继续下一次循环
@@ -120,11 +122,15 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                     Map<Object, Object> value = record.getValue();
                     VoucherOrder voucherOrder = BeanUtil.fillBeanWithMap(value, new VoucherOrder(), true);
 
+                    System.out.println("输出value内容：");
+                    System.out.println(value);
+
+
                     // 3.创建订单
                     createVoucherOrder(voucherOrder);
 
                     // 4.确认消息 XACK
-                    stringRedisTemplate.opsForStream().acknowledge("s1", "g1", record.getId());
+                    stringRedisTemplate.opsForStream().acknowledge(queueName, "g1", record.getId());
 
                 } catch (Exception e) {
                     log.error("处理订单异常", e);
@@ -190,7 +196,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 */
 
 
-        private void handleVoucherOrder(VoucherOrder voucherOrder) {
+   /*     private void handleVoucherOrder(VoucherOrder voucherOrder) {
             //1.获取用户
             Long userId = voucherOrder.getUserId();
             // 2.创建锁对象
@@ -211,7 +217,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                 redisLock.unlock();
             }
         }
-
+*/
     }
 
     /**
@@ -313,7 +319,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
        * //     * @return
        */
       @Transactional
-      public  void createVoucherOrder(VoucherOrder voucherOrder) {
+      public void createVoucherOrder(VoucherOrder voucherOrder) {
           Long userId = voucherOrder.getUserId();
           // 5.1.查询订单
           int count = query().eq("user_id", userId).eq("voucher_id", voucherOrder.getVoucherId()).count();
