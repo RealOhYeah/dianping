@@ -30,7 +30,17 @@ public class BlogController {
     @Resource
     private IBlogService blogService;
 
+    /**
+     * 发布笔记
+     * @param blog
+     * @return
+     */
     @PostMapping
+    public Result saveBlog(@RequestBody Blog blog) {
+        return blogService.saveBlog(blog);
+    }
+
+/*    @PostMapping
     public Result saveBlog(@RequestBody Blog blog) {
         // 获取登录用户
         UserDTO user = UserHolder.getUser();
@@ -39,20 +49,25 @@ public class BlogController {
         blogService.save(blog);
         // 返回id
         return Result.ok(blog.getId());
-    }
+    }*/
 
     /**
-     * 为作品点赞
+     * 点赞
      * @param id
      * @return
      */
     @PutMapping("/like/{id}")
     public Result likeBlog(@PathVariable("id") Long id) {
+        return blogService.likeBlog(id);
+    }
+
+    /*    @PutMapping("/like/{id}")
+    public Result likeBlog(@PathVariable("id") Long id) {
         // 修改点赞数量
         blogService.update()
                 .setSql("liked = liked + 1").eq("id", id).update();
         return Result.ok();
-    }
+    }*/
 
     @GetMapping("/of/me")
     public Result queryMyBlog(@RequestParam(value = "current", defaultValue = "1") Integer current) {
@@ -86,6 +101,17 @@ public class BlogController {
         return blogService.queryBlogById(id);
     }
 
+
+
+    /**
+     * 点赞排行榜
+     * @param id
+     * @return
+     */
+    @GetMapping("/likes/{id}")
+    public Result queryBlogLikes(@PathVariable("id") Long id) {
+        return blogService.queryBlogLikes(id);
+    }
 
 
 
