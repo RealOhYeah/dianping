@@ -83,7 +83,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             while (true) {
                 try {
 
-                    // 1.获取消息队列中的订单信息 XREADGROUP GROUP g1 c1 COUNT 1 BLOCK 2000 STREAMS s1 >  (注意在队列处：这里是">")
+                    // 1.获取消息队列中的订单信息 XREADGROUP GROUP g1 c1 COUNT 1 BLOCK 2000 STREAMS stream.orders >  (注意在队列处：这里是">")
                     // 为什么这里返回的是list：因为在count的指定中，如果不是1，返回的值可能是多个，所以给list来装结果
                     List<MapRecord<String, Object, Object>> list = stringRedisTemplate.opsForStream().read(
                             Consumer.from("g1", "c1"),
@@ -91,7 +91,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                             StreamOffset.create(queueName, ReadOffset.lastConsumed()) //ReadOffset.lastConsumed() => ">";
                     );
 
-                    System.out.println("调入循环中。。。。。");
+//                    System.out.println("调入循环中。。。。。");
 
                     // 2.判断订单信息是否为空
                     if (list == null || list.isEmpty()) {
@@ -130,9 +130,13 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                     createVoucherOrder(voucherOrder);
 
                     // 4.确认消息 XACK
-                    stringRedisTemplate.opsForStream().acknowledge(queueName, "g1", record.getId());
+                    Long ack = stringRedisTemplate.opsForStream().acknowledge(queueName, "g1", record.getId());
+
+                    System.out.println("确认消息返回值：" + ack);
+
 
                 } catch (Exception e) {
+                    System.out.println("真的是关闭的异常？？？---1");
                     log.error("处理订单异常", e);
                     //处理异常消息
                     handlePendingList();
@@ -161,12 +165,15 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                     // 3.创建订单
                     createVoucherOrder(voucherOrder);
                     // 4.确认消息 XACK
-                    stringRedisTemplate.opsForStream().acknowledge("s1", "g1", record.getId());
+                    stringRedisTemplate.opsForStream().acknowledge(queueName, "g1", record.getId());
                 } catch (Exception e) {
+                    System.out.println("真的是关闭的异常？？？---2");
                     log.error("处理pendding订单异常", e);
                     try {
                         //防止死循环太过频繁，休眠20毫秒
                         Thread.sleep(20);
+
+                        System.out.println("真的是关闭的异常？？？---3");
                     } catch (InterruptedException interruptedException) {
                         throw new RuntimeException(interruptedException);
                     }
@@ -340,6 +347,8 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
               log.error("库存不足");
               return ;
           }
+
+          // 创建订单并保存到数据库
           save(voucherOrder);
 
       }
