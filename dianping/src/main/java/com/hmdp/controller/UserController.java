@@ -84,6 +84,11 @@ public class UserController {
         return Result.ok(info);
     }
 
+    /**
+     * 根据id查询用户
+     * @param userId
+     * @return
+     */
     @GetMapping("/{id}")
     public Result queryUserById(@PathVariable("id") Long userId){
         // 查询详情
