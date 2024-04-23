@@ -96,11 +96,19 @@ public class UserController {
         return Result.ok(userDTO);
     }
 
+    /**
+     * 注册功能
+     * @return
+     */
     @PostMapping("/sign")
     public Result sign(){
         return userService.sign();
     }
 
+    /**
+     * 登出功能
+     * @return
+     */
     @GetMapping("/sign/count")
     public Result signCount(){
         return userService.signCount();

@@ -47,7 +47,11 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     @Resource
     private IFollowService followService;
 
-
+    /**
+     * 点赞功能
+     * @param id
+     * @return
+     */
     @Override
     public Result likeBlog(Long id) {
         // 1.获取登录用户
@@ -106,7 +110,6 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
      * @param blog
      * @return
      */
-
     @Override
     public Result saveBlog(Blog blog) {
         // 1.获取登录用户
@@ -172,8 +175,6 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         });
         return Result.ok(records);
     }
-
-
 
 
     /**

@@ -108,6 +108,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok(token);
     }
 
+    /**
+     * 注册功能
+     * @return
+     */
     @Override
     public Result sign() {
         // 1.获取当前登录用户
@@ -124,6 +128,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok();
     }
 
+    /**
+     * 登出功能
+     * @return
+     */
     @Override
     public Result signCount() {
         // 1.获取当前登录用户
