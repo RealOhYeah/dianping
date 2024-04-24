@@ -87,6 +87,11 @@ public class BlogController {
         return Result.ok();
     }*/
 
+    /**
+     * 查询登录用户的笔记
+     * @param current
+     * @return
+     */
     @GetMapping("/of/me")
     public Result queryMyBlog(@RequestParam(value = "current", defaultValue = "1") Integer current) {
         // 获取登录用户
