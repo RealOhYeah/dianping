@@ -30,6 +30,17 @@ public class BlogController {
     @Resource
     private IBlogService blogService;
 
+    /**
+     * 实现分页查询收邮箱
+     * @param max
+     * @param offset
+     * @return
+     */
+    @GetMapping("/of/follow")
+    public Result queryBlogOfFollow(
+            @RequestParam("lastId") Long max, @RequestParam(value = "offset", defaultValue = "0") Integer offset){
+        return blogService.queryBlogOfFollow(max, offset);
+    }
 
     /**
      * 根据用户id查询所有发布的笔记
