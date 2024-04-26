@@ -152,9 +152,6 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         Set<ZSetOperations.TypedTuple<String>> typedTuples = stringRedisTemplate.opsForZSet()
                 .reverseRangeByScoreWithScores(key, 0, max, offset, 2);
 
-        System.out.println("查看typedTuples的内容");
-        System.out.println(typedTuples.toString());
-
         // 3.非空判断
         if (typedTuples == null || typedTuples.isEmpty()) {
             return Result.ok();
