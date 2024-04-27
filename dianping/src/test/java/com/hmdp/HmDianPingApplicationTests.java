@@ -89,6 +89,9 @@ class HmDianPingApplicationTests {
     }
 
 
+    /**
+     * 将店铺根据typeId分组写入redis
+     */
     @Test
     void loadShopData() {
         // 1.查询店铺信息

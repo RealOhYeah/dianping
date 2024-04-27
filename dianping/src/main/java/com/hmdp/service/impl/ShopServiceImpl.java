@@ -338,14 +338,14 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
                 .search(
                         key,
                         GeoReference.fromCoordinate(x, y),
-                        new Distance(5000),
+                        new Distance(5000),  //设定目标距离店铺5公里
                         RedisGeoCommands.GeoSearchCommandArgs.newGeoSearchArgs().includeDistance().limit(end)
                 );
         // 4.解析出id
         if (results == null) {
             return Result.ok(Collections.emptyList());
         }
-        List<GeoResult<RedisGeoCommands.GeoLocation<String>>> list = results.getContent();
+        List<GeoResult<RedisGeoCommands.GeoLocation<String>>> list = results.getContent(); // 获得结果的列表
         if (list.size() <= from) {
             // 没有下一页了，结束
             return Result.ok(Collections.emptyList());
@@ -355,7 +355,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         Map<String, Distance> distanceMap = new HashMap<>(list.size());
         list.stream().skip(from).forEach(result -> {
             // 4.2.获取店铺id
-            String shopIdStr = result.getContent().getName();
+            String shopIdStr = result.getContent().getName(); //
             ids.add(Long.valueOf(shopIdStr));
             // 4.3.获取距离
             Distance distance = result.getDistance();

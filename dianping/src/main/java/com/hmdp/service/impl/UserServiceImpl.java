@@ -108,8 +108,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok(token);
     }
 
+
     /**
-     * 注册功能
+     * 签到功能
      * @return
      */
     @Override
@@ -128,8 +129,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok();
     }
 
+
     /**
-     * 登出功能
+     * 从每个月的最后一天来向前查看连续签到的数量，如果出现0就前面的都不算
      * @return
      */
     @Override
@@ -168,11 +170,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 // 如果不为0，说明已签到，计数器+1
                 count++;
             }
-            // 把数字右移一位，抛弃最后一个bit位，继续下一个bit位
+            // 与运算会转化为二进制进行运算。
+            // 下方把数字右移一位，抛弃最后一个bit位，继续下一个bit位
             num >>>= 1;
         }
         return Result.ok(count);
     }
+
+
 
     private User createUserWithPhone(String phone) {
         // 1.创建用户

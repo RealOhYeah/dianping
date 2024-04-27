@@ -28,14 +28,15 @@ public interface IUserService extends IService<User> {
      */
     Result login(LoginFormDTO loginForm, HttpSession session);
 
+
     /**
-     * 注册功能
+     * 签到功能
      * @return
      */
     Result sign();
 
     /**
-     * 登出功能
+     * 从每个月的最后一天来向前查看连续签到的数量，如果出现0就前面的都不算
      * @return
      */
     Result signCount();
